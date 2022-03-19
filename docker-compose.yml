@@ -7,7 +7,7 @@ services:
   postgres:
     image: postgres:11.6-alpine
     environment:
-      POSTGRES_DB: scm
+      POSTGRES_DB: pikabu
       POSTGRES_USER: purrweb
       POSTGRES_PASSWORD: purrweb
     volumes:

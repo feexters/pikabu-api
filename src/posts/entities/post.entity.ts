@@ -1,13 +1,15 @@
 import { Comment } from 'src/comments/entities/comment.entity';
 import { User } from 'src/users/entities';
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Base } from 'src/common/entities';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { PostMedia } from 'src/post-media/entities';
 
 const tableName = 'posts';
 
 @Entity({
   name: tableName,
 })
-export class Post extends BaseEntity {
+export class Post extends Base {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -29,4 +31,7 @@ export class Post extends BaseEntity {
 
   @OneToMany(() => Comment, (comment) => comment.post)
   comments: Comment[];
+
+  @OneToMany(() => PostMedia, (postMedia) => postMedia.post)
+  media: PostMedia[];
 }

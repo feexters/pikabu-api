@@ -5,6 +5,8 @@ import { TypeOrmConfigService } from './common/services/typeorm-config.service';
 import { UsersModule } from './users/users.module';
 import { PostsModule } from './posts/posts.module';
 import { CommentsModule } from './comments/comments.module';
+import { CommentMediaModule } from './comment-media/comment-media.module';
+import { PostMediaModule } from './post-media/post-media.module';
 import * as configuration from './config/configuration';
 
 @Module({
@@ -21,6 +23,8 @@ import * as configuration from './config/configuration';
     UsersModule,
     PostsModule,
     CommentsModule,
+    CommentMediaModule,
+    PostMediaModule,
   ],
 })
 export class AppModule {}

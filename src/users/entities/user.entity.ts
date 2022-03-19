@@ -1,12 +1,13 @@
 import { Post } from 'src/posts/entities';
-import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Base } from 'src/common/entities';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 const tableName = 'users';
 
 @Entity({
   name: tableName,
 })
-export class User extends BaseEntity {
+export class User extends Base {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
