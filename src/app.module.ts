@@ -3,6 +3,8 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmConfigService } from './common/services/typeorm-config.service';
 import { UsersModule } from './users/users.module';
+import { PostsModule } from './posts/posts.module';
+import { CommentsModule } from './comments/comments.module';
 import * as configuration from './config/configuration';
 
 @Module({
@@ -17,6 +19,8 @@ import * as configuration from './config/configuration';
       useClass: TypeOrmConfigService,
     }),
     UsersModule,
+    PostsModule,
+    CommentsModule,
   ],
 })
 export class AppModule {}

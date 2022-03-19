@@ -1,5 +1,6 @@
+import { Comment } from 'src/comments/entities/comment.entity';
 import { User } from 'src/users/entities';
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 const tableName = 'posts';
 
@@ -19,10 +20,13 @@ export class Post extends BaseEntity {
   @Column({ type: 'text', array: true, default: [] })
   tags: string[];
 
-  @Column({ type: 'text' })
+  @Column({ type: 'uuid' })
   userId: string;
 
   @ManyToOne(() => User, (user) => user.posts)
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   user?: User;
+
+  @OneToMany(() => Comment, (comment) => comment.post)
+  comments: Comment[];
 }
