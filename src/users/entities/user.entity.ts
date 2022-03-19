@@ -1,11 +1,12 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Post } from 'src/posts/entities';
+import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 const tableName = 'users';
 
 @Entity({
   name: tableName,
 })
-export class User {
+export class User extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -17,4 +18,7 @@ export class User {
 
   @Column({ type: 'text' })
   password: string;
+
+  @OneToMany(() => Post, (post) => post.user)
+  posts: Post[];
 }
