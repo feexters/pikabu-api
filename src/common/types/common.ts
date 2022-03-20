@@ -1,7 +1,14 @@
+import { Field, InterfaceType } from '@nestjs/graphql';
+
 export enum MediaType {
-  VIDEO = 'VIDEO',
   PHOTO = 'PHOTO',
-  ALBUM = 'ALBUM',
-  LINK = 'LINK',
-  FILES = 'FILES',
+}
+
+@InterfaceType()
+export abstract class UserError {
+  @Field()
+  field: string;
+
+  @Field(() => [String])
+  messages: string[];
 }

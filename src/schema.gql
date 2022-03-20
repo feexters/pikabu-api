@@ -1,0 +1,43 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type AuthUserPayload {
+  token: String
+  user: UserModel
+  userErrors: [UserError!]
+}
+
+type Mutation {
+  signUp(input: SignUpInput!): AuthUserPayload!
+}
+
+type Query {
+  sayHello: String!
+}
+
+input SignUpInput {
+  email: String!
+  password: String!
+  username: String!
+}
+
+"""
+A string represents string UUID v4
+"""
+scalar UUID
+
+interface UserError {
+  field: String!
+  messages: [String!]!
+}
+
+type UserModel {
+  id: UUID!
+  username: String!
+}
+
+type ValidationError implements UserError {
+  field: String!
+  messages: [String!]!
+}
