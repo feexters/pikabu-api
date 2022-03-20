@@ -9,11 +9,13 @@ type AuthUserPayload {
 }
 
 type Mutation {
+  signIn(input: SignInInput!): AuthUserPayload!
   signUp(input: SignUpInput!): AuthUserPayload!
 }
 
-type Query {
-  sayHello: String!
+input SignInInput {
+  email: String!
+  password: String!
 }
 
 input SignUpInput {

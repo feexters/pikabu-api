@@ -1,6 +1,6 @@
-import { Resolver, Args, Mutation, Query } from '@nestjs/graphql';
+import { Resolver, Args, Mutation } from '@nestjs/graphql';
 import { validate } from 'src/common/utils';
-import { SignUpInput } from '../inputs';
+import { SignInInput, SignUpInput } from '../inputs';
 import { AuthUserPayload } from '../payloads';
 import { UserAuthService } from '../services';
 
@@ -8,14 +8,20 @@ import { UserAuthService } from '../services';
 export class UsersMutationResolver {
   constructor(private readonly userAuthService: UserAuthService) {}
 
-  // @Publci()
-  // async signIn(@Body() authSignInDto: AuthSignInDto): Promise<AuthResponseDto> {
-  //   return AuthResponseDto.create(await this.authService.signIn(authSignInDto));
-  // }
+  @Mutation(() => AuthUserPayload)
+  async signIn(
+    @Args({ name: 'input', type: () => SignInInput })
+    input: SignInInput,
+  ): Promise<AuthUserPayload> {
+    const userErrors = await validate(input);
 
-  @Query(() => String)
-  sayHello(): string {
-    return 'Hello World!';
+    if (userErrors.length > 0) {
+      return {
+        userErrors,
+      };
+    }
+
+    return AuthUserPayload.create(await this.userAuthService.signIn(input));
   }
 
   @Mutation(() => AuthUserPayload)
@@ -23,7 +29,6 @@ export class UsersMutationResolver {
     @Args({ name: 'input', type: () => SignUpInput })
     input: SignUpInput,
   ): Promise<AuthUserPayload> {
-    console.log(input);
     const userErrors = await validate(input);
 
     if (userErrors.length > 0) {
