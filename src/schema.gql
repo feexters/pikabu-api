@@ -8,9 +8,50 @@ type AuthUserPayload {
   userErrors: [UserError!]
 }
 
+input MediaBaseInput {
+  source: String!
+  type: MediaType!
+}
+
+enum MediaType {
+  PHOTO
+}
+
 type Mutation {
+  createPost(input: PostCreateInput!): PostCreatePayload!
   signIn(input: SignInInput!): AuthUserPayload!
   signUp(input: SignUpInput!): AuthUserPayload!
+}
+
+input PostCreateInput {
+  description: String!
+  media: [MediaBaseInput!]
+  tags: [String!]
+  title: String!
+}
+
+type PostCreatePayload {
+  post: PostModel
+  userErrors: [UserError!]
+}
+
+type PostMediaModel {
+  id: UUID!
+  postId: UUID!
+  source: String!
+  type: MediaType!
+}
+
+type PostModel {
+  description: String!
+  id: UUID!
+  media: [PostMediaModel!]
+  tags: [String!]!
+  title: String!
+}
+
+type Query {
+  sayHello: String!
 }
 
 input SignInInput {
