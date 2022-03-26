@@ -1,11 +1,14 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { PageOffsetInfo } from 'src/common/models';
 import { PostMedia } from 'src/post-media/entities';
 import { PostMediaRepository } from 'src/post-media/repositories';
 import { Post } from 'src/posts/entities';
 import { PostsRepository } from 'src/posts/repositories';
 import { User } from 'src/users/entities';
+import { PostsGetInput } from '../inputs';
 import { PostCreateInput } from '../inputs/post-create.input';
 import { PostEditInput } from '../inputs/post-edit.input';
+import { PostModel } from '../models';
 
 @Injectable()
 export class PostsService {
@@ -49,5 +52,19 @@ export class PostsService {
     const post = await this.postsRepository.findOne(postId);
 
     return this.postsRepository.remove(post);
+  }
+
+  async getPosts(input: PostsGetInput): Promise<{
+    data: PostModel[];
+    pageInfo: PageOffsetInfo;
+  }> {
+    const { posts, ...pageInfo } = await this.postsRepository.getPostsPagination(input);
+
+    const data = posts.map((post) => PostModel.create(post));
+
+    return {
+      data,
+      pageInfo,
+    };
   }
 }

@@ -25,6 +25,12 @@ type Mutation {
   signUp(input: SignUpInput!): AuthUserPayload!
 }
 
+type PageOffsetInfo {
+  count: Float!
+  page: Float!
+  total: Float!
+}
+
 input PostCreateInput {
   description: String!
   media: [MediaBaseInput!]
@@ -64,8 +70,19 @@ type PostModel {
   title: String!
 }
 
+input PostsGetInput {
+  limit: Float = 10
+  page: Float = 1
+}
+
+type PostsGetPayload {
+  data: [PostModel!]
+  pageInfo: PageOffsetInfo
+  userErrors: [UserError!]
+}
+
 type Query {
-  sayHello: String!
+  postsGet(input: PostsGetInput!): PostsGetPayload!
 }
 
 input SignInInput {

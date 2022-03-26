@@ -10,6 +10,6 @@ export class PostMediaRepository extends Repository<PostMedia> {
       })
       .getMany();
 
-    return [postMedia];
+    return postIds.map((id) => postMedia.filter((media) => media.postId === id));
   }
 }
