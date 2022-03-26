@@ -13,6 +13,9 @@ import { GraphQLConfigService } from './common/services/graphql-config.service';
 import { ApolloDriver } from '@nestjs/apollo';
 import { AuthModule } from './auth/auth.module';
 import { ScalarsModule } from './common/modules/scalars.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { commonDataLoaderRepositories, commonDataLoaders } from './common/loaders';
+import { DataLoaderInterceptor } from './common/libs/dataloader';
 
 @Module({
   imports: [
@@ -29,6 +32,7 @@ import { ScalarsModule } from './common/modules/scalars.module';
       useClass: GraphQLConfigService,
       driver: ApolloDriver,
     }),
+    TypeOrmModule.forFeature(commonDataLoaderRepositories),
     UsersModule,
     PostsModule,
     CommentsModule,
@@ -36,6 +40,13 @@ import { ScalarsModule } from './common/modules/scalars.module';
     PostMediaModule,
     AuthModule,
     ScalarsModule,
+  ],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: DataLoaderInterceptor,
+    },
+    ...commonDataLoaders,
   ],
 })
 export class AppModule {}

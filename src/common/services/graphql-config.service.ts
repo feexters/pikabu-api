@@ -10,6 +10,7 @@ export class GraphQLConfigService implements GqlOptionsFactory {
       sortSchema: true,
       fieldResolverEnhancers: ['interceptors'],
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      context: ({ req, connection }) => ({ req: connection ? connection.context : req }),
     };
   }
 }

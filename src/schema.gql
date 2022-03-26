@@ -8,9 +8,81 @@ type AuthUserPayload {
   userErrors: [UserError!]
 }
 
+input MediaBaseInput {
+  source: String!
+  type: MediaType!
+}
+
+enum MediaType {
+  PHOTO
+}
+
 type Mutation {
+  postCreate(input: PostCreateInput!): PostCreatePayload!
+  postEdit(input: PostEditInput!): PostEditPayload!
+  postRemove(postId: UUID!): Boolean!
   signIn(input: SignInInput!): AuthUserPayload!
   signUp(input: SignUpInput!): AuthUserPayload!
+}
+
+type PageOffsetInfo {
+  count: Float!
+  page: Float!
+  total: Float!
+}
+
+input PostCreateInput {
+  description: String!
+  media: [MediaBaseInput!]
+  tags: [String!]
+  title: String!
+}
+
+type PostCreatePayload {
+  post: PostModel
+  userErrors: [UserError!]
+}
+
+input PostEditInput {
+  description: String
+  id: UUID!
+  tags: [String!]
+  title: String
+}
+
+type PostEditPayload {
+  post: PostModel
+  userErrors: [UserError!]
+}
+
+type PostMediaModel {
+  id: UUID!
+  postId: UUID!
+  source: String!
+  type: MediaType!
+}
+
+type PostModel {
+  description: String!
+  id: UUID!
+  media: [PostMediaModel!]
+  tags: [String!]!
+  title: String!
+}
+
+input PostsGetInput {
+  limit: Float = 10
+  page: Float = 1
+}
+
+type PostsGetPayload {
+  data: [PostModel!]
+  pageInfo: PageOffsetInfo
+  userErrors: [UserError!]
+}
+
+type Query {
+  postsGet(input: PostsGetInput!): PostsGetPayload!
 }
 
 input SignInInput {

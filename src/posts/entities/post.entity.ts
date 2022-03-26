@@ -10,6 +10,8 @@ const tableName = 'posts';
   name: tableName,
 })
 export class Post extends Base {
+  static tableName = tableName;
+
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
