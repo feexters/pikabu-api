@@ -32,6 +32,11 @@ type Mutation {
   signUp(input: SignUpInput!): AuthUserPayload!
 }
 
+input OrderPostsGetInput {
+  createdAt: SortType
+  likesCount: SortType
+}
+
 type PageOffsetInfo {
   count: Float!
   page: Float!
@@ -103,6 +108,7 @@ type PostsBookmarksPayload {
 
 input PostsGetInput {
   limit: Float = 10
+  order: OrderPostsGetInput
   page: Float = 1
 }
 
@@ -126,6 +132,11 @@ input SignUpInput {
   email: String!
   password: String!
   username: String!
+}
+
+enum SortType {
+  ASC
+  DESC
 }
 
 """

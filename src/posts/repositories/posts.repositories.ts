@@ -16,13 +16,13 @@ export class PostsRepository extends Repository<Post> {
     return true;
   }
 
-  async getPostsPagination({ page = 1, limit = 10 }: PostsGetInput): Promise<
+  async getPostsPagination({ page = 1, limit = 10, order }: PostsGetInput): Promise<
     {
       posts: Post[];
     } & PageOffsetInfo
   > {
     const [posts, count] = await this.findAndCount({
-      order: { createdAt: 'DESC' },
+      order,
       take: limit,
       skip: limit * (page - 1),
     });

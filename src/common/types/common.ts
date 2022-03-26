@@ -8,6 +8,15 @@ registerEnumType(MediaType, {
   name: 'MediaType',
 });
 
+export enum SortType {
+  ASC = 'ASC',
+  DESC = 'DESC',
+}
+
+registerEnumType(SortType, {
+  name: 'SortType',
+});
+
 @InterfaceType()
 export abstract class UserError {
   @Field()
