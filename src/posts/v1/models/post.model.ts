@@ -20,6 +20,12 @@ export class PostModel {
   @Field(() => [PostMediaModel], { nullable: true })
   media?: PostMediaModel[];
 
+  @Field(() => Number)
+  likesCount?: number;
+
+  @Field(() => Number)
+  dislikesCount?: number;
+
   private constructor(data: Partial<PostModel>) {
     Object.assign(this, data);
   }

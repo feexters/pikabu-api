@@ -18,6 +18,7 @@ enum MediaType {
 }
 
 type Mutation {
+  postAddLike(input: PostAddLikeInput!): Boolean!
   postCreate(input: PostCreateInput!): PostCreatePayload!
   postEdit(input: PostEditInput!): PostEditPayload!
   postRemove(postId: UUID!): Boolean!
@@ -29,6 +30,11 @@ type PageOffsetInfo {
   count: Float!
   page: Float!
   total: Float!
+}
+
+input PostAddLikeInput {
+  postId: UUID!
+  type: UserPostLikeType!
 }
 
 input PostCreateInput {
@@ -64,7 +70,9 @@ type PostMediaModel {
 
 type PostModel {
   description: String!
+  dislikesCount: Float!
   id: UUID!
+  likesCount: Float!
   media: [PostMediaModel!]
   tags: [String!]!
   title: String!
@@ -109,6 +117,11 @@ interface UserError {
 type UserModel {
   id: UUID!
   username: String!
+}
+
+enum UserPostLikeType {
+  DISLIKE
+  LIKE
 }
 
 type ValidationError implements UserError {

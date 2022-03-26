@@ -16,6 +16,7 @@ import { ScalarsModule } from './common/modules/scalars.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { commonDataLoaderRepositories, commonDataLoaders } from './common/loaders';
 import { DataLoaderInterceptor } from './common/libs/dataloader';
+import { UserPostsModule } from './user-posts/user-posts.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { DataLoaderInterceptor } from './common/libs/dataloader';
     PostMediaModule,
     AuthModule,
     ScalarsModule,
+    UserPostsModule,
   ],
   providers: [
     {
