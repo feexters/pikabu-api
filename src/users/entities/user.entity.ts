@@ -1,7 +1,7 @@
 import { Post } from 'src/posts/entities';
 import { Base } from 'src/common/entities';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { UserPostsLike } from 'src/user-posts/entities';
+import { UserPostsBookmarks, UserPostsLike } from 'src/user-posts/entities';
 
 const tableName = 'users';
 
@@ -26,4 +26,7 @@ export class User extends Base {
 
   @OneToMany(() => UserPostsLike, (userPostsLike) => userPostsLike.user)
   postsLiked: UserPostsLike[];
+
+  @OneToMany(() => UserPostsBookmarks, (userPostsBookmarks) => userPostsBookmarks.user)
+  postsBookmarks: UserPostsBookmarks[];
 }

@@ -1,13 +1,18 @@
 import { Injectable } from '@nestjs/common';
+import { PageOffsetInfo } from 'src/common/models';
 import { PostsRepository } from 'src/posts/repositories';
+import { PostModel } from 'src/posts/v1/models';
+import { UserPostsBookmarksRepository } from 'src/user-posts/repositories';
 import { UserPostsLikeRepository } from '../../repositories/user-posts-like.repository';
-import { PostAddLikeInput } from '../inputs';
+import { PostAddLikeInput, PostsBookmarksInput } from '../inputs';
+import { PostAddBookmarkInput } from '../inputs/post-add-bookmark.input';
 
 @Injectable()
 export class UserPostsService {
   constructor(
     private readonly usersPostsLikeRepository: UserPostsLikeRepository,
     private readonly postsRepository: PostsRepository,
+    private readonly usersPostsBookmarksRepository: UserPostsBookmarksRepository,
   ) {}
 
   async postAddLike(userId: string, { postId, type }: PostAddLikeInput): Promise<boolean> {
@@ -34,5 +39,37 @@ export class UserPostsService {
       decrement: existRelation.type,
       increment: newRelation.type,
     });
+  }
+
+  async getPostsBookmarks(
+    userId: string,
+    input: PostsBookmarksInput,
+  ): Promise<{
+    data: PostModel[];
+    pageInfo: PageOffsetInfo;
+  }> {
+    const { posts, ...pageInfo } = await this.usersPostsBookmarksRepository.getPostsPagination(userId, input);
+
+    const data = posts.map((post) => PostModel.create(post));
+
+    return {
+      data,
+      pageInfo,
+    };
+  }
+
+  async postAddBookmark(userId: string, { postId }: PostAddBookmarkInput): Promise<boolean> {
+    const exist = await this.usersPostsBookmarksRepository.findOne({ userId, postId });
+
+    if (exist) {
+      await this.usersPostsBookmarksRepository.remove(exist);
+
+      return true;
+    }
+
+    const created = this.usersPostsBookmarksRepository.create({ userId, postId });
+    await this.usersPostsBookmarksRepository.save(created);
+
+    return true;
   }
 }

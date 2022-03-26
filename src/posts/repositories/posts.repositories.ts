@@ -21,7 +21,11 @@ export class PostsRepository extends Repository<Post> {
       posts: Post[];
     } & PageOffsetInfo
   > {
-    const [posts, count] = await this.findAndCount({ take: limit, skip: page - 1 });
+    const [posts, count] = await this.findAndCount({
+      order: { createdAt: 'DESC' },
+      take: limit,
+      skip: limit * (page - 1),
+    });
 
     return {
       posts,
