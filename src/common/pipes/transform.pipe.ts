@@ -1,5 +1,6 @@
 import { ArgumentMetadata, Injectable, PipeTransform, Type } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
+import * as DataLoader from 'dataloader';
 
 @Injectable()
 export class TransformPipe implements PipeTransform<any> {
@@ -15,7 +16,7 @@ export class TransformPipe implements PipeTransform<any> {
 
   private toValidate(metatype: Type<any> | undefined): boolean {
     // for nest-dataloader
-    const types: any = [String, Boolean, Number, Array, Object];
+    const types: any[] = [String, Boolean, Number, Array, Object, DataLoader];
 
     return !types.includes(metatype);
   }

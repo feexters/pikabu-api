@@ -18,7 +18,9 @@ enum MediaType {
 }
 
 type Mutation {
-  createPost(input: PostCreateInput!): PostCreatePayload!
+  postCreate(input: PostCreateInput!): PostCreatePayload!
+  postEdit(input: PostEditInput!): PostEditPayload!
+  postRemove(postId: UUID!): Boolean!
   signIn(input: SignInInput!): AuthUserPayload!
   signUp(input: SignUpInput!): AuthUserPayload!
 }
@@ -31,6 +33,18 @@ input PostCreateInput {
 }
 
 type PostCreatePayload {
+  post: PostModel
+  userErrors: [UserError!]
+}
+
+input PostEditInput {
+  description: String
+  id: UUID!
+  tags: [String!]
+  title: String
+}
+
+type PostEditPayload {
   post: PostModel
   userErrors: [UserError!]
 }

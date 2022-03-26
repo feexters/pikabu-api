@@ -8,13 +8,15 @@ const tableName = 'post_media';
   name: tableName,
 })
 export class PostMedia extends MediaBase {
+  static tableName = tableName;
+
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({ type: 'uuid' })
   postId: string;
 
-  @ManyToOne(() => Post, (post) => post.media)
+  @ManyToOne(() => Post, (post) => post.media, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'postId', referencedColumnName: 'id' })
   post?: Post;
 }
