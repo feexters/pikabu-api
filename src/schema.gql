@@ -8,6 +8,11 @@ type AuthUserPayload {
   userErrors: [UserError!]
 }
 
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 input MediaBaseInput {
   source: String!
   type: MediaType!
@@ -18,6 +23,8 @@ enum MediaType {
 }
 
 type Mutation {
+  postAddBookmark(input: PostAddBookmarkInput!): Boolean!
+  postAddLike(input: PostAddLikeInput!): Boolean!
   postCreate(input: PostCreateInput!): PostCreatePayload!
   postEdit(input: PostEditInput!): PostEditPayload!
   postRemove(postId: UUID!): Boolean!
@@ -29,6 +36,15 @@ type PageOffsetInfo {
   count: Float!
   page: Float!
   total: Float!
+}
+
+input PostAddBookmarkInput {
+  postId: UUID!
+}
+
+input PostAddLikeInput {
+  postId: UUID!
+  type: UserPostLikeType!
 }
 
 input PostCreateInput {
@@ -63,11 +79,26 @@ type PostMediaModel {
 }
 
 type PostModel {
+  createdAt: DateTime!
   description: String!
+  dislikesCount: Float!
   id: UUID!
+  likesCount: Float!
   media: [PostMediaModel!]
   tags: [String!]!
   title: String!
+  updatedAt: DateTime!
+}
+
+input PostsBookmarksInput {
+  limit: Float = 10
+  page: Float = 1
+}
+
+type PostsBookmarksPayload {
+  data: [PostModel!]
+  pageInfo: PageOffsetInfo
+  userErrors: [UserError!]
 }
 
 input PostsGetInput {
@@ -82,6 +113,7 @@ type PostsGetPayload {
 }
 
 type Query {
+  postsBookmarks(input: PostsBookmarksInput!): PostsBookmarksPayload!
   postsGet(input: PostsGetInput!): PostsGetPayload!
 }
 
@@ -109,6 +141,11 @@ interface UserError {
 type UserModel {
   id: UUID!
   username: String!
+}
+
+enum UserPostLikeType {
+  DISLIKE
+  LIKE
 }
 
 type ValidationError implements UserError {

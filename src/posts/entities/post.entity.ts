@@ -3,6 +3,7 @@ import { User } from 'src/users/entities';
 import { Base } from 'src/common/entities';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { PostMedia } from 'src/post-media/entities';
+import { UserPostsBookmarks, UserPostsLike } from 'src/user-posts/entities';
 
 const tableName = 'posts';
 
@@ -27,6 +28,12 @@ export class Post extends Base {
   @Column({ type: 'uuid' })
   userId: string;
 
+  @Column({ type: 'int', default: 0 })
+  likesCount: number;
+
+  @Column({ type: 'int', default: 0 })
+  dislikesCount: number;
+
   @ManyToOne(() => User, (user) => user.posts)
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   user?: User;
@@ -36,4 +43,10 @@ export class Post extends Base {
 
   @OneToMany(() => PostMedia, (postMedia) => postMedia.post)
   media: PostMedia[];
+
+  @OneToMany(() => UserPostsLike, (userPostsLike) => userPostsLike.post)
+  usersLiked: UserPostsLike[];
+
+  @OneToMany(() => UserPostsBookmarks, (userPostsBookmarks) => userPostsBookmarks.post)
+  usersBookmarks: UserPostsBookmarks[];
 }
