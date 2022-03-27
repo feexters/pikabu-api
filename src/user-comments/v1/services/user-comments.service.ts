@@ -1,12 +1,44 @@
 import { Injectable } from '@nestjs/common';
 import { CommentModel } from 'src/comments/v1/models';
 import { PageOffsetInfo } from 'src/common/models';
+import { UserCommentsLikeRepository } from 'src/user-comments/repositories';
 import { UserCommentsBookmarksRepository } from 'src/user-comments/repositories/user-comments-bookmark.repository';
-import { CommentAddBookmarkInput, CommentsBookmarksInput } from '../inputs';
+import { CommentAddBookmarkInput, CommentAddLikeInput, CommentsBookmarksInput } from '../inputs';
+import { CommentsRepository } from '../../../comments/repositories/comment.repository';
 
 @Injectable()
 export class UserCommentsService {
-  constructor(private readonly userCommentsBookmarksRepository: UserCommentsBookmarksRepository) {}
+  constructor(
+    private readonly userCommentsBookmarksRepository: UserCommentsBookmarksRepository,
+    private readonly userCommentsLikeRepository: UserCommentsLikeRepository,
+    private readonly commentsRepository: CommentsRepository,
+  ) {}
+
+  async commentAddLike(userId: string, { commentId, type }: CommentAddLikeInput): Promise<boolean> {
+    const existRelation = await this.userCommentsLikeRepository.findOne({ userId, commentId });
+
+    if (!existRelation) {
+      const created = this.userCommentsLikeRepository.create({ userId, commentId, type });
+
+      await this.userCommentsLikeRepository.save(created);
+
+      return this.commentsRepository.updateLikeCounters({ commentId, increment: type });
+    }
+
+    if (existRelation.type === type) {
+      await this.userCommentsLikeRepository.remove(existRelation);
+
+      return this.commentsRepository.updateLikeCounters({ commentId, decrement: type });
+    }
+
+    const newRelation = await this.userCommentsLikeRepository.save({ ...existRelation, type });
+
+    return this.commentsRepository.updateLikeCounters({
+      commentId,
+      decrement: existRelation.type,
+      increment: newRelation.type,
+    });
+  }
 
   async getCommentsBookmarks(
     userId: string,

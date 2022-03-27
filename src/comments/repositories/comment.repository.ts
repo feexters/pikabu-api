@@ -1,5 +1,6 @@
 import { PageOffsetInfo } from 'src/common/models';
-import { EntityRepository, Repository } from 'typeorm';
+import { UserCommentLikeType } from 'src/user-comments/user-comments.types';
+import { EntityRepository, Repository, UpdateResult } from 'typeorm';
 import { Comment } from '../entities';
 import { CommentsPostGetInput } from '../v1/inputs';
 
@@ -39,5 +40,35 @@ export class CommentsRepository extends Repository<Comment> {
       page,
       total: count,
     };
+  }
+
+  async updateLikeCounters({
+    commentId,
+    increment,
+    decrement,
+  }: {
+    commentId: string;
+    increment?: UserCommentLikeType;
+    decrement?: UserCommentLikeType;
+  }): Promise<boolean> {
+    const incrementByType = {
+      [UserCommentLikeType.LIKE]: (): Promise<UpdateResult> => this.increment({ id: commentId }, 'likesCount', 1),
+      [UserCommentLikeType.DISLIKE]: (): Promise<UpdateResult> => this.increment({ id: commentId }, 'dislikesCount', 1),
+    };
+
+    if (increment) {
+      await incrementByType[increment]();
+    }
+
+    const decrementByType = {
+      [UserCommentLikeType.LIKE]: (): Promise<UpdateResult> => this.decrement({ id: commentId }, 'likesCount', 1),
+      [UserCommentLikeType.DISLIKE]: (): Promise<UpdateResult> => this.decrement({ id: commentId }, 'dislikesCount', 1),
+    };
+
+    if (decrement) {
+      await decrementByType[decrement]();
+    }
+
+    return true;
   }
 }

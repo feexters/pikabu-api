@@ -12,6 +12,11 @@ input CommentAddBookmarkInput {
   commentId: UUID!
 }
 
+input CommentAddLikeInput {
+  commentId: UUID!
+  type: UserCommentLikeType!
+}
+
 input CommentAddToPostInput {
   comment: String!
   media: [MediaBaseInput!]
@@ -101,6 +106,7 @@ enum MediaType {
 
 type Mutation {
   commentAddBookmark(input: CommentAddBookmarkInput!): Boolean!
+  commentAddLike(input: CommentAddLikeInput!): Boolean!
   commentAddToPost(input: CommentAddToPostInput!): CommentAddToPostPayload!
   commentPostEdit(input: CommentPostEditInput!): CommentPostEditPayload!
   commentRemove(commentId: UUID!): Boolean!
@@ -233,6 +239,11 @@ enum SortType {
 A string represents string UUID v4
 """
 scalar UUID
+
+enum UserCommentLikeType {
+  DISLIKE
+  LIKE
+}
 
 interface UserError {
   field: String!
