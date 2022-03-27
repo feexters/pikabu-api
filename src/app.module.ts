@@ -17,6 +17,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { commonDataLoaderRepositories, commonDataLoaders } from './common/loaders';
 import { DataLoaderInterceptor } from './common/libs/dataloader';
 import { UserPostsModule } from './user-posts/user-posts.module';
+import { UserCommentsModule } from './user-comments/user-comments.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { UserPostsModule } from './user-posts/user-posts.module';
     AuthModule,
     ScalarsModule,
     UserPostsModule,
+    UserCommentsModule,
   ],
   providers: [
     {

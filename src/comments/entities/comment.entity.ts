@@ -3,6 +3,7 @@ import { User } from 'src/users/entities';
 import { Base } from 'src/common/entities';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { CommentMedia } from 'src/comment-media/entities';
+import { UserCommentsBookmarks } from 'src/user-comments/entities';
 
 const tableName = 'comments';
 
@@ -34,4 +35,7 @@ export class Comment extends Base {
 
   @OneToMany(() => CommentMedia, (commentMedia) => commentMedia.comment)
   media: CommentMedia[];
+
+  @OneToMany(() => UserCommentsBookmarks, (userCommentsBookmarks) => userCommentsBookmarks.comment)
+  usersBookmarks?: UserCommentsBookmarks[];
 }
