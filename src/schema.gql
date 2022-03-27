@@ -73,6 +73,7 @@ type PostEditPayload {
 
 input PostGetFilter {
   search: String = ""
+  tags: [String!] = []
 }
 
 type PostMediaModel {

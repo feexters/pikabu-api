@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsEnum, IsOptional, IsString } from 'class-validator';
 import { BaseOffsetPaginationInput } from 'src/common/inputs';
 import { SortType } from 'src/common/types/common';
 
@@ -22,6 +22,12 @@ class PostGetFilter {
   @IsString()
   @Field(() => String, { nullable: true, defaultValue: '' })
   search?: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  @Field(() => [String], { nullable: true, defaultValue: [] })
+  tags?: string[];
 }
 
 @InputType()

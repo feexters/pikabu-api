@@ -21,14 +21,21 @@ export class PostsRepository extends Repository<Post> {
       posts: Post[];
     } & PageOffsetInfo
   > {
-    const { search = '' } = filters;
+    const { search = '', tags = [] } = filters;
 
-    const [posts, count] = await this.findAndCount({
-      where: `title ILIKE('%${search}%')`,
-      order,
-      take: limit,
-      skip: limit * (page - 1),
-    });
+    const qb = this.createQueryBuilder(Post.tableName)
+      .where(`${Post.tableName}.title ILIKE(:search)`, {
+        search: `%${search}%`,
+      })
+      .andWhere(`${Post.tableName}.tags @> :tags`, { tags });
+
+    const count = await qb.getCount();
+    const posts = await qb
+      .orderBy('"createdAt"', order?.createdAt)
+      .addOrderBy('"likesCount"', order?.likesCount)
+      .skip(limit * (page - 1))
+      .take(limit)
+      .getMany();
 
     return {
       posts,
