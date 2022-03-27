@@ -3,6 +3,7 @@ import { User } from 'src/users/entities';
 import { Base } from 'src/common/entities';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { CommentMedia } from 'src/comment-media/entities';
+import { UserCommentsBookmarks, UserCommentsLike } from 'src/user-comments/entities';
 
 const tableName = 'comments';
 
@@ -17,6 +18,12 @@ export class Comment extends Base {
 
   @Column({ type: 'text' })
   comment: string;
+
+  @Column({ type: 'int', default: 0 })
+  likesCount: number;
+
+  @Column({ type: 'int', default: 0 })
+  dislikesCount: number;
 
   @Column({ type: 'uuid' })
   userId: string;
@@ -34,4 +41,10 @@ export class Comment extends Base {
 
   @OneToMany(() => CommentMedia, (commentMedia) => commentMedia.comment)
   media: CommentMedia[];
+
+  @OneToMany(() => UserCommentsLike, (userCommentsLike) => userCommentsLike.comment)
+  usersLiked: UserCommentsLike[];
+
+  @OneToMany(() => UserCommentsBookmarks, (userCommentsBookmarks) => userCommentsBookmarks.comment)
+  usersBookmarks?: UserCommentsBookmarks[];
 }

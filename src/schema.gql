@@ -8,6 +8,15 @@ type AuthUserPayload {
   userErrors: [UserError!]
 }
 
+input CommentAddBookmarkInput {
+  commentId: UUID!
+}
+
+input CommentAddLikeInput {
+  commentId: UUID!
+  type: UserCommentLikeType!
+}
+
 input CommentAddToPostInput {
   comment: String!
   media: [MediaBaseInput!]
@@ -43,6 +52,17 @@ input CommentPostEditInput {
 
 type CommentPostEditPayload {
   comment: CommentModel
+  userErrors: [UserError!]
+}
+
+input CommentsBookmarksInput {
+  limit: Float = 10
+  page: Float = 1
+}
+
+type CommentsBookmarksPayload {
+  data: [CommentModel!]
+  pageInfo: PageOffsetInfo
   userErrors: [UserError!]
 }
 
@@ -85,6 +105,8 @@ enum MediaType {
 }
 
 type Mutation {
+  commentAddBookmark(input: CommentAddBookmarkInput!): Boolean!
+  commentAddLike(input: CommentAddLikeInput!): Boolean!
   commentAddToPost(input: CommentAddToPostInput!): CommentAddToPostPayload!
   commentPostEdit(input: CommentPostEditInput!): CommentPostEditPayload!
   commentRemove(commentId: UUID!): Boolean!
@@ -191,6 +213,7 @@ type PostsGetPayload {
 }
 
 type Query {
+  commentsBookmarks(input: CommentsBookmarksInput!): CommentsBookmarksPayload!
   commentsPostGet(input: CommentsPostGetInput!): CommentsPostGetPayload!
   postsBookmarks(input: PostsBookmarksInput!): PostsBookmarksPayload!
   postsGet(input: PostsGetInput!): PostsGetPayload!
@@ -216,6 +239,11 @@ enum SortType {
 A string represents string UUID v4
 """
 scalar UUID
+
+enum UserCommentLikeType {
+  DISLIKE
+  LIKE
+}
 
 interface UserError {
   field: String!
