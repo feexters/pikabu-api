@@ -3,8 +3,10 @@ import { CommentMedia } from 'src/comment-media/entities';
 import { CommentMediaRepository } from 'src/comment-media/repositories';
 import { Comment } from 'src/comments/entities';
 import { CommentsRepository } from 'src/comments/repositories';
+import { PageOffsetInfo } from 'src/common/models';
 import { User } from 'src/users/entities';
-import { CommentAddToPostInput, CommentPostEditInput } from '../inputs';
+import { CommentAddToPostInput, CommentPostEditInput, CommentsPostGetInput } from '../inputs';
+import { CommentModel } from '../models';
 
 @Injectable()
 export class CommentsService {
@@ -48,5 +50,19 @@ export class CommentsService {
     const comment = await this.commentsRepository.findOne(commentId);
 
     return this.commentsRepository.remove(comment);
+  }
+
+  async getComments(input: CommentsPostGetInput): Promise<{
+    data: CommentModel[];
+    pageInfo: PageOffsetInfo;
+  }> {
+    const { comments, ...pageInfo } = await this.commentsRepository.getCommentsPagination(input);
+
+    const data = comments.map((comment) => CommentModel.create(comment));
+
+    return {
+      data,
+      pageInfo,
+    };
   }
 }
