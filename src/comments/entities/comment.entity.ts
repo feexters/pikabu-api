@@ -10,6 +10,8 @@ const tableName = 'comments';
   name: tableName,
 })
 export class Comment extends Base {
+  static tableName = tableName;
+
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
