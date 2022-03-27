@@ -13,6 +13,12 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+enum FilterGroupType {
+  HOT
+  NEW
+  THE_BEST
+}
+
 input MediaBaseInput {
   source: String!
   type: MediaType!
@@ -71,6 +77,12 @@ type PostEditPayload {
   userErrors: [UserError!]
 }
 
+input PostGetFilter {
+  groupType: FilterGroupType
+  search: String = ""
+  tags: [String!] = []
+}
+
 type PostMediaModel {
   id: UUID!
   postId: UUID!
@@ -102,8 +114,15 @@ type PostsBookmarksPayload {
 }
 
 input PostsGetInput {
+  filters: PostGetFilter
   limit: Float = 10
+  order: PostsGetOrder
   page: Float = 1
+}
+
+input PostsGetOrder {
+  createdAt: SortType
+  likesCount: SortType
 }
 
 type PostsGetPayload {
@@ -126,6 +145,11 @@ input SignUpInput {
   email: String!
   password: String!
   username: String!
+}
+
+enum SortType {
+  ASC
+  DESC
 }
 
 """

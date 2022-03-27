@@ -1,3 +1,4 @@
+import { Base } from 'src/common/entities';
 import { Post } from 'src/posts/entities';
 import { User } from 'src/users/entities';
 import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
@@ -11,7 +12,7 @@ const tableName = 'user_posts_like';
 @Index('UNIQUE_USER_AND_POST_ID', ['userId', 'postId'], {
   unique: true,
 })
-export class UserPostsLike {
+export class UserPostsLike extends Base {
   static tableName = tableName;
 
   @PrimaryColumn('uuid')
