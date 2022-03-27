@@ -8,6 +8,34 @@ type AuthUserPayload {
   userErrors: [UserError!]
 }
 
+input CommentAddToPostInput {
+  comment: String!
+  media: [MediaBaseInput!]
+  postId: UUID!
+}
+
+type CommentAddToPostPayload {
+  comment: CommentModel
+  userErrors: [UserError!]
+}
+
+type CommentMediaModel {
+  commentId: UUID!
+  id: UUID!
+  source: String!
+  type: MediaType!
+}
+
+type CommentModel {
+  comment: String!
+  createdAt: DateTime!
+  id: UUID!
+  media: [CommentMediaModel!]
+  postId: UUID!
+  updatedAt: DateTime!
+  userId: UUID!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -29,6 +57,7 @@ enum MediaType {
 }
 
 type Mutation {
+  commentAddToPost(input: CommentAddToPostInput!): CommentAddToPostPayload!
   postAddBookmark(input: PostAddBookmarkInput!): Boolean!
   postAddLike(input: PostAddLikeInput!): Boolean!
   postCreate(input: PostCreateInput!): PostCreatePayload!
