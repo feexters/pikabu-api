@@ -32,11 +32,6 @@ type Mutation {
   signUp(input: SignUpInput!): AuthUserPayload!
 }
 
-input OrderPostsGetInput {
-  createdAt: SortType
-  likesCount: SortType
-}
-
 type PageOffsetInfo {
   count: Float!
   page: Float!
@@ -76,6 +71,10 @@ type PostEditPayload {
   userErrors: [UserError!]
 }
 
+input PostGetFilter {
+  search: String = ""
+}
+
 type PostMediaModel {
   id: UUID!
   postId: UUID!
@@ -107,9 +106,15 @@ type PostsBookmarksPayload {
 }
 
 input PostsGetInput {
+  filters: PostGetFilter
   limit: Float = 10
-  order: OrderPostsGetInput
+  order: PostsGetOrder
   page: Float = 1
+}
+
+input PostsGetOrder {
+  createdAt: SortType
+  likesCount: SortType
 }
 
 type PostsGetPayload {

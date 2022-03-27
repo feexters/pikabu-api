@@ -1,10 +1,10 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsEnum, IsOptional } from 'class-validator';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { BaseOffsetPaginationInput } from 'src/common/inputs';
 import { SortType } from 'src/common/types/common';
 
 @InputType()
-export class OrderPostsGetInput {
+class PostsGetOrder {
   @IsOptional()
   @IsEnum(SortType)
   @Field(() => SortType, { nullable: true })
@@ -17,8 +17,20 @@ export class OrderPostsGetInput {
 }
 
 @InputType()
+class PostGetFilter {
+  @IsOptional()
+  @IsString()
+  @Field(() => String, { nullable: true, defaultValue: '' })
+  search?: string;
+}
+
+@InputType()
 export class PostsGetInput extends BaseOffsetPaginationInput {
   @IsOptional()
-  @Field(() => OrderPostsGetInput, { nullable: true })
-  order?: OrderPostsGetInput;
+  @Field(() => PostsGetOrder, { nullable: true })
+  order?: PostsGetOrder;
+
+  @IsOptional()
+  @Field(() => PostGetFilter, { nullable: true })
+  filters?: PostGetFilter;
 }

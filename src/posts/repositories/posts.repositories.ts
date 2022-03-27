@@ -16,12 +16,15 @@ export class PostsRepository extends Repository<Post> {
     return true;
   }
 
-  async getPostsPagination({ page = 1, limit = 10, order }: PostsGetInput): Promise<
+  async getPostsPagination({ page = 1, limit = 10, order, filters }: PostsGetInput): Promise<
     {
       posts: Post[];
     } & PageOffsetInfo
   > {
+    const { search = '' } = filters;
+
     const [posts, count] = await this.findAndCount({
+      where: `title ILIKE('%${search}%')`,
       order,
       take: limit,
       skip: limit * (page - 1),
