@@ -1,8 +1,10 @@
+import { UserPostsLike } from 'src/user-posts/entities';
 import { PageOffsetInfo } from 'src/common/models';
 import { EntityRepository, Repository, UpdateResult } from 'typeorm';
 import { Post } from '../entities';
 import { PostsGetInput } from '../v1/inputs';
 import { UserPostLikeType } from '../../user-posts/user-posts.types';
+import { FilterGroupType } from 'src/common/types';
 
 @EntityRepository(Post)
 export class PostsRepository extends Repository<Post> {
@@ -21,21 +23,42 @@ export class PostsRepository extends Repository<Post> {
       posts: Post[];
     } & PageOffsetInfo
   > {
-    const { search = '', tags = [] } = filters;
+    const { search = '', tags = [], groupType } = filters;
 
     const qb = this.createQueryBuilder(Post.tableName)
+      .addSelect('*')
       .where(`${Post.tableName}.title ILIKE(:search)`, {
         search: `%${search}%`,
       })
       .andWhere(`${Post.tableName}.tags @> :tags`, { tags });
 
+    if (!groupType) {
+      qb.orderBy('"createdAt"', order?.createdAt).addOrderBy('"likesCount"', order?.likesCount);
+    }
+
+    if (groupType === FilterGroupType.NEW) {
+      qb.andWhere(`${Post.tableName}."createdAt" BETWEEN (NOW() - INTERVAL '24 HOUR') AND NOW()`);
+    }
+
+    if (groupType === FilterGroupType.THE_BEST) {
+      qb.innerJoinAndSelect(
+        (query) => {
+          return query
+            .from(`${UserPostsLike.tableName}`, 'upl')
+            .select('upl."postId", count(upl."postId") as "count"')
+            .where('upl."createdAt" BETWEEN (NOW() - INTERVAL \'24 HOUR\') AND NOW()')
+            .groupBy('upl."postId"');
+        },
+        'likesByDay',
+        `${Post.tableName}.id = "likesByDay"."postId"`,
+      ).orderBy('"likesByDay".count', 'DESC');
+    }
+
     const count = await qb.getCount();
     const posts = await qb
-      .orderBy('"createdAt"', order?.createdAt)
-      .addOrderBy('"likesCount"', order?.likesCount)
       .skip(limit * (page - 1))
       .take(limit)
-      .getMany();
+      .getRawMany();
 
     return {
       posts,

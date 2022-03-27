@@ -17,6 +17,16 @@ registerEnumType(SortType, {
   name: 'SortType',
 });
 
+export enum FilterGroupType {
+  NEW = 'NEW',
+  HOT = 'HOT',
+  THE_BEST = 'THE_BEST',
+}
+
+registerEnumType(FilterGroupType, {
+  name: 'FilterGroupType',
+});
+
 @InterfaceType()
 export abstract class UserError {
   @Field()

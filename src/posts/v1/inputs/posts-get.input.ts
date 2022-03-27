@@ -1,7 +1,7 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { IsArray, IsEnum, IsOptional, IsString } from 'class-validator';
 import { BaseOffsetPaginationInput } from 'src/common/inputs';
-import { SortType } from 'src/common/types/common';
+import { SortType, FilterGroupType } from 'src/common/types/common';
 
 @InputType()
 class PostsGetOrder {
@@ -28,6 +28,11 @@ class PostGetFilter {
   @IsString({ each: true })
   @Field(() => [String], { nullable: true, defaultValue: [] })
   tags?: string[];
+
+  @IsOptional()
+  @IsEnum(FilterGroupType)
+  @Field(() => FilterGroupType, { nullable: true })
+  groupType?: FilterGroupType;
 }
 
 @InputType()
