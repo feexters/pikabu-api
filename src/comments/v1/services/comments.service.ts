@@ -43,4 +43,10 @@ export class CommentsService {
 
     return this.commentsRepository.save({ ...existComment, ...updatedValues });
   }
+
+  async remove(commentId: string): Promise<Comment> {
+    const comment = await this.commentsRepository.findOne(commentId);
+
+    return this.commentsRepository.remove(comment);
+  }
 }

@@ -1,6 +1,7 @@
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { IAM } from 'src/common/decorators';
+import { UUID } from 'src/common/scalars';
 import { validate } from 'src/common/utils';
 import { User } from 'src/users/entities';
 import { CommentOwnerGuard } from '../guards/comment-owner.guard';
@@ -46,5 +47,13 @@ export class CommentsMutationResolver {
     const comment = await this.commentsService.editComment(input);
 
     return CommentPostEditPayload.create({ comment });
+  }
+
+  @Mutation(() => Boolean)
+  @UseGuards(CommentOwnerGuard)
+  async commentRemove(@Args('commentId', { type: () => UUID }) commentId: string): Promise<boolean> {
+    await this.commentsService.remove(commentId);
+
+    return true;
   }
 }

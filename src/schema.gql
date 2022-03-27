@@ -69,6 +69,7 @@ enum MediaType {
 type Mutation {
   commentAddToPost(input: CommentAddToPostInput!): CommentAddToPostPayload!
   commentPostEdit(input: CommentPostEditInput!): CommentPostEditPayload!
+  commentRemove(commentId: UUID!): Boolean!
   postAddBookmark(input: PostAddBookmarkInput!): Boolean!
   postAddLike(input: PostAddLikeInput!): Boolean!
   postCreate(input: PostCreateInput!): PostCreatePayload!
