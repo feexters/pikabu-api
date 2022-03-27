@@ -8,6 +8,8 @@ const tableName = 'comment_media';
   name: tableName,
 })
 export class CommentMedia extends MediaBase {
+  static tableName = tableName;
+
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
