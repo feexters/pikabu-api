@@ -5,6 +5,7 @@ import { Post } from '../entities';
 import { PostsGetInput } from '../v1/inputs';
 import { UserPostLikeType } from '../../user-posts/user-posts.types';
 import { FilterGroupType } from 'src/common/types';
+import { Comment } from 'src/comments/entities';
 
 @EntityRepository(Post)
 export class PostsRepository extends Repository<Post> {
@@ -18,7 +19,7 @@ export class PostsRepository extends Repository<Post> {
     return true;
   }
 
-  async getPostsPagination({ page = 1, limit = 10, order, filters }: PostsGetInput): Promise<
+  async getPostsPagination({ page = 1, limit = 10, order, filters = {} }: PostsGetInput): Promise<
     {
       posts: Post[];
     } & PageOffsetInfo
@@ -52,6 +53,20 @@ export class PostsRepository extends Repository<Post> {
         'likesByDay',
         `${Post.tableName}.id = "likesByDay"."postId"`,
       ).orderBy('"likesByDay".count', 'DESC');
+    }
+
+    if (groupType === FilterGroupType.HOT) {
+      qb.innerJoinAndSelect(
+        (query) => {
+          return query
+            .from(`${Comment.tableName}`, 'comment')
+            .select('comment."postId", count(comment."postId") as "count"')
+            .where('comment."createdAt" BETWEEN (NOW() - INTERVAL \'24 HOUR\') AND NOW()')
+            .groupBy('comment."postId"');
+        },
+        'commentsByDay',
+        `${Post.tableName}.id = "commentsByDay"."postId"`,
+      ).orderBy('"commentsByDay".count', 'DESC');
     }
 
     const count = await qb.getCount();
